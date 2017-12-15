@@ -1,0 +1,33 @@
+version: '2'
+services:
+  gateway:
+    container_name: gateway
+    build:     
+      context: gateway
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./gateway/local.env
+    links:
+      - database:database
+
+  front:
+    container_name: front
+    build:
+      context: front
+    ports:
+      - "8080:80"
+      - "8443:443"
+    links:
+      - gateway:gateway
+    env_file:
+      - ./front/local.env
+
+  database:
+    container_name: postgres
+    image: postgres:9.6-alpine
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data/pgsql:/var/lib/postgresql/data/:z
+
